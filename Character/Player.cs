@@ -1,76 +1,54 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DungeonExplorer.Player {
-    public class Player {
+namespace DungeonExplorer
+{
+    public class Monster : IDamageable
+    //monster takes damage 
+    {
+        public string Name { get; private set; }
+        //monsters name , alows for scalability as well
+        //for diffrent levels cna have diffrent names 
 
-        public const int MAX_HEALTH = 100;
-        public const int MAX_DAMAGE = 40;
-        public string Name { get; set; }
-        public int Health { get; set; }
-        public int Damage { get; set; }
-        private List<Item.Item> inventory = new List<Item.Item>();
+        public int Health { get; private set; }
+        //monstor health
 
-        public Player(string name, int health, int damage)
+        public Monster(string name, int health)
         {
             Name = name;
             Health = health;
-            Damage = damage;
         }
-
-        public void PickUpItem(Item.Item item)
-        {
-            inventory.Add(item);
-        }
-
-        public void UseItem(Item.Item item)
-        {
-            // item usage logic here
-            if (InventoryContents().Contains(item))
-            {
-                Console.WriteLine($"{Name} uses {item.Name}");
-                // Apply item effects
-                item.Use(this);
-            }
-            else
-            {
-                Console.WriteLine($"{Name} does not have {item.Name}");
-            }
-        }
+        //initializes new mosntor 
 
         public void TakeDamage(int damage)
+        //allows for the monster to take damage 
         {
             Health -= damage;
+            Console.WriteLine($"{Name} takes {damage} damage!");
+            //cheaks if monstore sitill ahs health or is defeted 
+            if (Health <= 0)
+            {
+                Console.WriteLine($"{Name} has been slain!!!!");
+            }
         }
+        
 
-        public void AddHealth(int health)
+        public void Attack(Player player)
+        //alternativly the mosnter cna attack the player 
         {
-            Health += health;
+            int damage = 10; 
+            // the damage amount
+            Console.WriteLine($"{Name} attacks {player.Name} for {damage} damage!!!");
+            player.TakeDamage(damage);
+            // the players damage 
         }
+    }
 
-        public List<Item.Item> InventoryContents()
-        {
-            return inventory;
-        }
-
-        public void RemoveItem(Item.Item item)
-        {
-            inventory.Remove(item);
-            Console.WriteLine($"{item.Name} removed from inventory.");
-        }
-
-        public int getMaxHealth()
-        {
-            return MAX_HEALTH;
-        }
-
-        public int getMaxDamage()
-        {
-            return MAX_DAMAGE;
-        }
-
+    public interface IDamageable
+    {
+        void TakeDamage(int damage);
     }
 }
