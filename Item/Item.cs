@@ -6,42 +6,68 @@ using System.Threading.Tasks;
 
 namespace DungeonExplorer
 {
-    public class Inventory
-    //class to mange more than 1 item objects
+    public interface ICollectible
+     //interface that alows the player to collect and use items 
     {
-        private List<Item> items = new List<Item>();
+        void UseItem(Player player);
+    }
 
-        public void AddItem(Item item)
-        //methord that addes item to invantory
+    public abstract class Item : ICollectible
+    // this aloows the palye to collect items 
+
+    {
+        public string Name { get; set; }
+
+        public Item(string name)
         {
-            items.Add(item);
-            Console.WriteLine($"{item.Name} is added to inventory!");
+            Name = name;
         }
 
-        public List<Item> GetWeapons()
-        // use LINQ to get all weapons in inventory
+        //for items name
 
+        public abstract void UseItem(Player player); 
+    }
+    //defines how the player cna use the item 
+    public class Weapon : Item
+    //item difined as weappon 
+    {
+        public int AttackBonus { get; set; }
+        //when using wepon attack bones is given 
+
+        public Weapon(string name, int attackBonus) : base(name)
         {
-            return items.Where(item => item is Weapon).ToList();
+            AttackBonus = attackBonus;
+        }
+        //for weapons name and attack bonus
+
+        public override void UseItem(Player player)
+        //item is overwritten to being a weapon
+        {
+            
+            Console.WriteLine($"{player.Name} uses {Name}. Attack increased by {AttackBonus}!!");
+            // this is how the weapon increases the players attack
         }
 
-        public List<Item> GetPotions()
-        //LINQ and Lambda used to return all potion items
-        {
-            return items.Where(item => item is Potion).ToList();
-            // filters and returns items that are potions
+    }
 
+    public class Potion : Item
+    //this si another type of item insted of weapon 
+    //itll increas the palyes healing when its low
+    {
+        public int HealthRestored { get; set; }
+        //the spesific ammoubtn of health it will restore 
+
+        public Potion(string name, int healthRestored) : base(name)
+        {
+            HealthRestored = healthRestored;
         }
 
-        public void ShowInventory()
-        // displays the names of all items in the inventory
-
+        public override void UseItem(Player player)
+        //item will be postion insted of item
         {
-            Console.WriteLine("Inventory:");
-            foreach (var item in items)
-            {
-                Console.WriteLine(item.Name);
-            }
+            Console.WriteLine($"{player.Name} uses the {Name} and regained {HealthRestored} health!!");
+            player.RestoreHealth(HealthRestored);
+            //restores health if players health is not to low 
         }
     }
 }
